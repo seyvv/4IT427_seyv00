@@ -1,6 +1,8 @@
 import FilmCard from "./components/FilmCard";
+import { useWatchlist } from "./hooks/useWatchlist";
+import type { Film } from "./types/film.types";
 
-const films = [
+export const initialFilms: Film[] = [
   {
     title: "Inception",
     year: 2010,
@@ -24,16 +26,15 @@ const films = [
   },
 ];
 
-
 function App() {
-
-  const handleToggleWatched = (title: string) => {
-    console.log(`Změna stavu filmu ${title}`);
-  }
+  const { films, handleToggleWatched, markAllAsWatched } = useWatchlist(initialFilms);
 
   return (
     <>
       <h1>Film Watchlist</h1>
+
+      <button onClick={markAllAsWatched}>Mark All as Watched</button>
+
       <div>
         {films.map((film) => (
           <FilmCard
