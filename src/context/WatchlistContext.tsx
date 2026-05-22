@@ -65,13 +65,6 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
         );
     };
 
-    useEffect(() => {
-        const watchedCount = films.filter((film) => film.watched).length;
-        const totalCount = films.length;
-
-        document.title = `Watchlist ${watchedCount} / ${totalCount} zhlédnuto`;
-    }, [films]);
-
     const markAllAsWatched = () => {
         setFilms((prevFilms) =>
             prevFilms.map((film) => ({
