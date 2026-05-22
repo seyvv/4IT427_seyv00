@@ -1,0 +1,74 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 240px;
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    background: var(--color-surface);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.2);
+}
+
+.watched {
+    border-color: var(--color-success);
+    background: var(--color-surface-muted);
+}
+
+.title {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--color-text);
+}
+
+.meta {
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
+.badge {
+    width: fit-content;
+    border-radius: 999px;
+    padding: 5px 10px;
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.button {
+    border: none;
+    border-radius: 999px;
+    padding: 9px 12px;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+.removeButton {
+    background: var(--color-danger);
+}
+
+.removeButton:hover {
+    background: var(--color-danger-hover);
+}
