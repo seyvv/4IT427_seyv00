@@ -1,33 +1,8 @@
 import FilmCard from "./components/FilmCard";
-import { useWatchlist } from "./hooks/useWatchlist";
-import type { Film } from "./types/film.types";
-
-export const initialFilms: Film[] = [
-  {
-    title: "Inception",
-    year: 2010,
-    genre: "Sci-Fi",
-    rating: 9,
-    watched: true,
-  },
-  {
-    title: "The Matrix",
-    year: 1999,
-    genre: "Sci-Fi",
-    rating: 8,
-    watched: false,
-  },
-  {
-    title: "Interstellar",
-    year: 2014,
-    genre: "Sci-Fi",
-    rating: 9,
-    watched: true,
-  },
-];
+import { useWatchlist } from "./context/WatchlistContext";
 
 function App() {
-  const { films, handleToggleWatched, markAllAsWatched } = useWatchlist(initialFilms);
+  const { films, handleToggleWatched, removeFilm, markAllAsWatched } = useWatchlist();
 
   return (
     <>
@@ -38,13 +13,15 @@ function App() {
       <div>
         {films.map((film) => (
           <FilmCard
-            key={film.title}
+            key={film.id}
+            id={film.id}
             title={film.title}
             year={film.year}
             genre={film.genre}
             rating={film.rating}
             watched={film.watched}
             onToggleWatched={handleToggleWatched}
+            onRemove={removeFilm}
           />
         ))}
       </div>
