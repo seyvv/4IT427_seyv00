@@ -16,7 +16,7 @@ export function AddFilmForm() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        addFilm({ id: crypto.randomUUID(), title, year: Number(year), genre, rating: Number(rating), watched: false });
+        addFilm({ title, year: Number(year), genre, rating: Number(rating), watched: false });
         setTitle("");
         setYear("");
         setGenre("");

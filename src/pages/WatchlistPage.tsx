@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export function WatchlistPage() {
 
-    const { films, handleToggleWatched, removeFilm, markAllAsWatched } = useWatchlist();
+    const { films, isLoading, isError, error, refetchFilms, handleToggleWatched, removeFilm, markAllAsWatched } = useWatchlist();
 
     const watchedCount = films.filter((film) => film.watched).length;
     const totalCount = films.length;
@@ -13,6 +13,19 @@ export function WatchlistPage() {
     useEffect(() => {
         document.title = `Watchlist ${watchedCount} / ${totalCount} zhlédnuto`;
     }, [films]);
+
+    if (isLoading) {
+        return <p>Načítám…</p>;
+    }
+
+    if (isError) {
+        return (
+            <div>
+                <p>{error?.message ?? 'Něco se pokazilo při načítání filmů.'}</p>
+                <button onClick={refetchFilms}>Zkusit znovu</button>
+            </div>
+        );
+    }
 
     return (
         <main>

@@ -1,67 +1,72 @@
 import type { Film } from '../types/film.types';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchFilms } from '../api/films';
 
-const initialFilms: Film[] = [
-    {
-        id: "1",
-        title: "Inception",
-        year: 2010,
-        genre: "Sci-Fi",
-        rating: 9,
-        watched: true,
-    },
-    {
-        id: "2",
-        title: "The Matrix",
-        year: 1999,
-        genre: "Sci-Fi",
-        rating: 8,
-        watched: false,
-    },
-    {
-        id: "3",
-        title: "Interstellar",
-        year: 2014,
-        genre: "Sci-Fi",
-        rating: 9,
-        watched: true,
-    },
-];
+type NewFilm = Omit<Film, 'id'>;
 
 type WatchlistContextValue = {
     films: Film[];
-    addFilm: (film: Film) => void;
+    addFilm: (film: NewFilm) => void;
     removeFilm: (id: string) => void;
     handleToggleWatched: (id: string) => void;
     markAllAsWatched: () => void;
-}
+    isLoading: boolean;
+    isError: boolean;
+    error: Error | null;
+    refetchFilms: () => void;
+};
 
 const WatchlistContext = createContext<WatchlistContextValue | null>(null);
 
 export function WatchlistProvider({ children }: { children: ReactNode }) {
-    const [films, setFilms] = useState<Film[]>(initialFilms);
+    const {
+        data: serverFilms = [],
+        isLoading,
+        isError,
+        error,
+        refetch,
+    } = useQuery<Film[], Error>({
+        queryKey: ['films'],
+        queryFn: fetchFilms,
+    });
 
-    const addFilm = (film: Film) => {
-        setFilms((prevFilms) => [...prevFilms, film]);
+    const [clientFilms, setClientFilms] = useState<Film[]>([]);
+
+    useEffect(() => {
+        if (serverFilms.length > 0 && clientFilms.length === 0) {
+            setClientFilms(serverFilms);
+        }
+    }, [serverFilms, clientFilms.length]);
+
+    const addFilm = (film: NewFilm) => {
+        const newFilm: Film = {
+            ...film,
+            id: Date.now().toString(),
+        };
+
+        setClientFilms((prevFilms) => [...prevFilms, newFilm]);
     };
 
     const removeFilm = (id: string) => {
-        setFilms((prevFilms) => prevFilms.filter((film) => film.id !== id));
+        setClientFilms((prevFilms) =>
+            prevFilms.filter((film) => film.id !== id)
+        );
     };
 
     const handleToggleWatched = (id: string) => {
-        setFilms((prevFilms) =>
+        setClientFilms((prevFilms) =>
             prevFilms.map((film) =>
-                film.id === id ?
-                    { ...film, watched: !film.watched }
+                film.id === id
+                    ? { ...film, watched: !film.watched }
                     : film
             )
         );
     };
 
     const markAllAsWatched = () => {
-        setFilms((prevFilms) =>
+        setClientFilms((prevFilms) =>
             prevFilms.map((film) => ({
                 ...film,
                 watched: true,
@@ -70,26 +75,30 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <WatchlistContext.Provider value={{
-            films,
-            addFilm,
-            removeFilm,
-            handleToggleWatched,
-            markAllAsWatched,
-        }}>
+        <WatchlistContext.Provider
+            value={{
+                films: clientFilms,
+                isLoading,
+                isError,
+                error,
+                refetchFilms: refetch,
+                addFilm,
+                removeFilm,
+                handleToggleWatched,
+                markAllAsWatched,
+            }}
+        >
             {children}
         </WatchlistContext.Provider>
-    )
+    );
 }
 
 export function useWatchlist() {
     const context = useContext(WatchlistContext);
 
     if (context === null) {
-        throw new Error("useWatchlist must be used inside WatchlistProvider");
+        throw new Error('useWatchlist must be used inside WatchlistProvider');
     }
 
     return context;
 }
-
-
