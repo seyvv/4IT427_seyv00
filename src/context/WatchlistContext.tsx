@@ -1,5 +1,5 @@
 import type { Film } from '../types/film.types';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 
 const initialFilms: Film[] = [
@@ -38,11 +38,6 @@ type WatchlistContextValue = {
 }
 
 const WatchlistContext = createContext<WatchlistContextValue | null>(null);
-
-type WatchlistProviderProps = {
-    children: ReactNode;
-    initialFilms: Film[];
-};
 
 export function WatchlistProvider({ children }: { children: ReactNode }) {
     const [films, setFilms] = useState<Film[]>(initialFilms);
